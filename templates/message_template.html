@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewPodcast</title>
+    <style>
+        body {
+            background-color: rgb(42, 41, 41);
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .boxes {
+            margin: 40px;
+            margin-bottom: 0;
+            padding: 40px;
+        }
+
+        .box {
+            font-family: Arial, sans-serif;
+            font-size: medium;
+            background-color: black;
+            color: white;
+            text-align: right;
+            direction: rtl;
+            padding: 40px;
+            margin: 20px;
+            border-radius: 20px;
+            max-width: 800px;
+        }
+
+        .pod_img {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            float: right;
+            margin-left: 24px;
+        }
+
+        .title {
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        .pod_t {
+            margin: 0;
+        }
+
+        .logo {
+            margin: 0;
+            margin-bottom: 50px;
+            padding-bottom: 50px;
+            text-align: center;
+        }
+
+        .img_logo {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .text-logo {
+            margin-top: 4px;
+        }
+
+        .right-text,
+        .left-text,
+        .separator {
+            display: inline-block;
+            font-size: large;
+            color: antiquewhite;
+            margin: 0 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="boxes">
+        {{ all_boxes }}
+    </div>
+    <div class="logo">
+        <img src={{ logo_link }} alt="logo" class="img_logo">
+        <div class="text-logo">
+            <a href={{ subscribe_link }}>
+                <span class="left-text">הרשמה</span>
+            </a>
+            <span class="separator">|</span>
+            <a href={{ unsubscribe_link }}>
+                <span class="right-text">הסרה</span>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

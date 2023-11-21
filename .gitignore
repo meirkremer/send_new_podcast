@@ -1,0 +1,9 @@
+venv/
+database/
+temporary/
+log/
+credentials/
+files/
+.idea/
+__pycache__/
+private_conf.py
