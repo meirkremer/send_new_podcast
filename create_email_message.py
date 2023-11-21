@@ -2,12 +2,13 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from time import strftime, gmtime
+from typing import List, Type
 from premailer import transform
 from db_schema import PodcastFiles
 from jinja2 import Template
 
 
-def _create_podcast_box(podcast: PodcastFiles) -> str:
+def _create_podcast_box(podcast: Type[PodcastFiles]) -> str:
     """
     Create an HTML representation of a podcast for use in an email template.
 
@@ -39,7 +40,7 @@ def _create_podcast_box(podcast: PodcastFiles) -> str:
     return podcast_box
 
 
-def _create_html_message(new_podcast: list[PodcastFiles]) -> str:
+def _create_html_message(new_podcast: List[Type[PodcastFiles]]) -> str:
     """
     Create an HTML message containing podcast boxes for a list of new podcast files to send it as an email message.
 
@@ -67,7 +68,7 @@ def _create_html_message(new_podcast: list[PodcastFiles]) -> str:
     return email_message
 
 
-def create_mail_message(new_podcast: list[PodcastFiles]) -> MIMEMultipart:
+def create_mail_message(new_podcast: List[Type[PodcastFiles]]) -> MIMEMultipart:
     """
     Create an email message with HTML content and embedded images for a list of new podcast files.
 
