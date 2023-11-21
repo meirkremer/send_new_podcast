@@ -2,16 +2,29 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from time import strftime, gmtime
-
 from premailer import transform
 from db_schema import PodcastFiles
 from jinja2 import Template
 
 
-def create_podcast_box(podcast):
+def _create_podcast_box(podcast: PodcastFiles) -> str:
+    """
+    Create an HTML representation of a podcast for use in an email template.
+
+    Parameters:
+        podcast (Podcast): The Podcast object containing details about the podcast.
+
+    Returns:
+        str: The HTML representation of the podcast box.
+    """
+    # Extract podcast class details
     podcast_details = podcast.podcast
+
+    # Create template of podcast box from template file
     with open('templates/podcast_template.html', 'r', encoding='utf-8') as f:
         podcast_template = Template(f.read())
+
+    # Render the template with podcast details
     podcast_box = podcast_template.render(
         track_link=podcast.drive_link,
         image_link=f'cid:{podcast_details.image_id}',
@@ -26,24 +39,55 @@ def create_podcast_box(podcast):
     return podcast_box
 
 
-def create_html_message(new_podcast: list[PodcastFiles]):
-    all_podcast_boxes = ''
-    for podcast in new_podcast:
-        all_podcast_boxes += create_podcast_box(podcast)
+def _create_html_message(new_podcast: list[PodcastFiles]) -> str:
+    """
+    Create an HTML message containing podcast boxes for a list of new podcast files to send it as an email message.
 
+    Parameters:
+        new_podcast (list[PodcastFiles]): A list of PodcastFiles objects representing new podcast episodes.
+
+    Returns:
+        str: The HTML representation of the email message.
+    """
+
+    # Initialize an empty string to concatenate all podcast boxes
+    all_podcast_boxes = ''
+
+    # Iterate through each new podcast and create a podcast box
+    for podcast in new_podcast:
+        all_podcast_boxes += _create_podcast_box(podcast)
+
+    # Create message template from template file
     with open('templates/message_template.html', 'r', encoding='utf-8') as f:
         message_template = Template(f.read())
 
+    # Render the HTML message with all new podcasts and logo area
     email_message = message_template.render(all_boxes=all_podcast_boxes,
                                             logo_link='cid:logo.jpg', subscribe_link='', unsubscribe_link='')
     return email_message
 
 
-def create_mail_message(new_podcast: list[PodcastFiles]):
-    html_message = create_html_message(new_podcast)
+def create_mail_message(new_podcast: list[PodcastFiles]) -> MIMEMultipart:
+    """
+    Create an email message with HTML content and embedded images for a list of new podcast files.
+
+    Parameters:
+        new_podcast (list[PodcastFiles]): A list of PodcastFiles objects representing new podcast episodes.
+
+    Returns:
+        MIMEMultipart: An email message with HTML content and embedded images.
+    """
+
+    # Create the HTML content for the email message
+    html_message = _create_html_message(new_podcast)
+
+    # Create an MIMEMultipart object to represent the email message
     message = MIMEMultipart()
+
+    # Attach the HTML to the message
     message.attach(MIMEText(transform(html_message), 'html'))
 
+    # Create image objects for each podcast class and attach it to the message
     exist_podcast_id = []
     for podcast in new_podcast:
         if podcast.podcast_id in exist_podcast_id:
@@ -53,6 +97,7 @@ def create_mail_message(new_podcast: list[PodcastFiles]):
         message.attach(image_object)
         exist_podcast_id.append(podcast.podcast_id)
 
+    # Create an image object for logo and attach it to the message
     with open('templates/freenet.png', 'rb') as f:
         logo = MIMEImage(f.read(), name='logo.jpg')
         logo.add_header('Content-ID', '<logo.jpg>')
