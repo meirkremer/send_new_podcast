@@ -4,7 +4,7 @@ import dicttoxml
 from db_manager import DatabaseManager
 from bs4 import BeautifulSoup
 import time
-from datetime import datetime
+from datetime import datetime, date
 from logging_manager import loger
 from typing import Union
 
@@ -52,7 +52,7 @@ def _get_mp3_link(entry: FeedParserDict) -> Union[str, None]:
 
 
 def _get_new_podcast(db: DatabaseManager, podcast_id: int, rss_url: str,
-                     etag: str, old_newz_id: str, date: datetime) -> list[Podcast]:
+                     etag: str, old_newz_id: str, last_date: date) -> list[Podcast]:
     """
     Fetches details of new podcast episodes from the specified RSS feed until the given date.
     :param db: Database manager instance to update the RSS details with the new ETag, last entry ID, and date.
@@ -60,7 +60,7 @@ def _get_new_podcast(db: DatabaseManager, podcast_id: int, rss_url: str,
     :param rss_url: The URL of the RSS feed to retrieve podcast episode details from.
     :param etag: The ETag string for quick checking of new episodes.
     :param old_newz_id: The ID string of the last known episode.
-    :param date: The last date to consider for retrieving updates. Only the date part is considered, time is ignored.
+    :param last_date: The last date to consider for retrieving updates.
     :return: A list of Podcast objects containing details of all new podcast episodes.
     """
 
@@ -87,7 +87,7 @@ def _get_new_podcast(db: DatabaseManager, podcast_id: int, rss_url: str,
         last_newz_id = entry_id if not last_newz_id else last_newz_id
         last_newz_date = published if not last_newz_date else last_newz_date
 
-        if published.date() < date or entry_id == old_newz_id:
+        if published.date() < last_date or entry_id == old_newz_id:
             break
 
         name = entry.get('title')
@@ -102,15 +102,15 @@ def _get_new_podcast(db: DatabaseManager, podcast_id: int, rss_url: str,
     return new_podcast
 
 
-def get_all_new_podcast(db: DatabaseManager, date: datetime) -> list[Podcast]:
+def get_all_new_podcast(db: DatabaseManager, last_date: date) -> list[Podcast]:
     """
     Get the all new podcast episodes until the given date
     :param db: Database manager instance to fetch and update the RSS data
-    :param date: datetime object with only a date
+    :param last_date: date object with only a date
     :return: list with Podcast instance represent the all new podcast episodes
     """
     all_new_podcast = []
     all_rss_url = [(rss.rss_link, rss.id, rss.e_tag, rss.last_newz_id) for rss in db.fetch_all_rss()]
     for rss_url, rss_id, etag, last_newz_id in all_rss_url:
-        all_new_podcast += _get_new_podcast(db, rss_id, rss_url, etag, last_newz_id, date)
+        all_new_podcast += _get_new_podcast(db, rss_id, rss_url, etag, last_newz_id, last_date)
     return all_new_podcast
