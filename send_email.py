@@ -1,3 +1,5 @@
+# TODO: all email sending manage will be move to difference server that will take care about subscribers
+#  and send / receive emails
 import smtplib
 from logging_manager import loger
 from db_manager import DatabaseManager
