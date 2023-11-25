@@ -16,8 +16,10 @@ loger = logging.getLogger(__name__)
 
 loger.setLevel(logging.DEBUG)
 
-log_number = str(len([log for log in os.listdir('log') if log.endswith('log')]) + 1)
-handler = logging.FileHandler(f'log/{log_number}-{datetime.now().strftime("%H_%M_%S-%d_%m_%Y")}.log', encoding='utf-8')
+log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log')
+
+log_number = str(len([log for log in os.listdir(log_dir) if log.endswith('log')]) + 1)
+handler = logging.FileHandler(f'{log_dir}/{log_number}-{datetime.now().strftime("%H_%M_%S-%d_%m_%Y")}.log', encoding='utf-8')
 
 formatter = logging.Formatter('%(levelname)s\n%(asctime)s\nmessage: %(message)s\n%(pathname)s line %(lineno)d\n')
 
