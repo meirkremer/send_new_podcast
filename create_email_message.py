@@ -93,7 +93,7 @@ def create_mail_message(new_podcast: List[Type[PodcastFiles]]) -> MIMEMultipart:
     for podcast in new_podcast:
         if podcast.podcast_id in exist_podcast_id:
             continue
-        image_object = MIMEImage(podcast.podcast.image, name=podcast.podcast.image_id)
+        image_object = MIMEImage(podcast.podcast.image, name=podcast.podcast.image_id, _subtype='jpeg')
         image_object.add_header('Content-ID', f'<{podcast.podcast.image_id}>')
         message.attach(image_object)
         exist_podcast_id.append(podcast.podcast_id)
