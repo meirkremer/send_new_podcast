@@ -44,9 +44,10 @@ class FilesManager:
         Returns:
         str: Valid file name with the specified extension.
         """
+        max_words = 8
         input_string = file_name.replace('_', ' ')
         pattern = r'[^a-zA-Z\dא-ת\s]'
-        clean_string = re.sub(pattern, '', input_string)
+        clean_string = ' '.join(re.sub(pattern, '', input_string).split()[:max_words])
         if len(clean_string) < 1:
             clean_string = 'untitled'
         return clean_string + ext
