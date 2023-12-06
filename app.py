@@ -51,7 +51,7 @@ if __name__ == '__main__':
     except Exception as e:
         # Write general exception to log file
         tb = traceback.extract_tb(e.__traceback__)
-        all_errors_message = f'\nerror details:\nall frames: {len(tb)}\n'
+        all_errors_message = f'\nerror details:\nall frames: {len(tb)}\n{e.__class__.__name__} {e}\n'
         for i, tb_f in enumerate(reversed(tb)):
             all_errors_message += f'frame number: {i + 1}\nfilename: {tb_f.filename}\nlineno: {tb_f.lineno}\n' \
                                   f'name: {tb_f.name}\ncode: {tb_f.line}\n\n'
