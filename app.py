@@ -6,6 +6,7 @@ from files_manager import FilesManager
 from logging_manager import loger
 from create_email_message import create_mail_message
 from send_email import send_email
+import traceback
 
 
 def main():
@@ -49,7 +50,12 @@ if __name__ == '__main__':
         main()
     except Exception as e:
         # Write general exception to log file
-        loger.error(e)
+        tb = traceback.extract_tb(e.__traceback__)
+        all_errors_message = f'\nerror details:\nall frames: {len(tb)}\n'
+        for i, tb_f in enumerate(reversed(tb)):
+            all_errors_message += f'frame number: {i + 1}\nfilename: {tb_f.filename}\nlineno: {tb_f.lineno}\n' \
+                                  f'name: {tb_f.name}\ncode: {tb_f.line}\n\n'
+        loger.error(all_errors_message)
     except SystemExit:
         # Write the run-time into the log file in case the exit() function is used during runtime
         loger.info(f'run time: {timedelta(seconds=(time() - start_run_time))}')
