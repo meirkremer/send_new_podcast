@@ -5,6 +5,7 @@ from logging_manager import loger
 from db_manager import DatabaseManager
 from db_schema import PodcastFiles
 from private_conf import private_conf
+from typing import Type, List
 
 
 def get_all_subscribers(db: DatabaseManager):
@@ -12,13 +13,13 @@ def get_all_subscribers(db: DatabaseManager):
     return all_subscribers
 
 
-def update_sent_podcast(sent_podcast: list[PodcastFiles], db: DatabaseManager):
+def update_sent_podcast(sent_podcast: List[Type[PodcastFiles]], db: DatabaseManager):
     sent_podcast_id = [podcast.id for podcast in sent_podcast]
     for podcast_id in sent_podcast_id:
         db.update_sent(podcast_id)
 
 
-def send_email(db, message, new_podcast: list[PodcastFiles]):
+def send_email(db, message, new_podcast: List[Type[PodcastFiles]]):
     sender_email = private_conf['sender_email_address']
     sender_password = private_conf['sender_email_password']
     subject = 'פודקאסטים חדשים'
