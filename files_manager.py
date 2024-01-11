@@ -108,6 +108,9 @@ class FilesManager:
         except requests.exceptions.ConnectionError as e:
             loger.error(e)
             return None
+        except requests.exceptions.MissingSchema as e:
+            loger.error(e)
+            return None
         if response.status_code != 200:
             return None
         chunk_size = 1024 * 1024  # TODO: Check the optimal chunk size for download
