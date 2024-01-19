@@ -46,7 +46,11 @@ def _get_mp3_link(entry: FeedParserDict) -> Union[str, None]:
     Returns:
     str or None: MP3 link if found, otherwise None.
     """
-    xml_entry = dicttoxml.dicttoxml(dict(entry))
+    try:
+        xml_entry = dicttoxml.dicttoxml(dict(entry))
+    except TypeError as e:
+        loger.error(e)
+        return None
     soup = BeautifulSoup(xml_entry, 'xml')
     return next(iter([link.text for link in soup.find_all('href') if '.mp3' in link.text]), None)
 
