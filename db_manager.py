@@ -96,6 +96,7 @@ class DatabaseManager:
 
         # Commit the changes and delete the file
         session.commit()
+        session.close()
         os.remove(new_subscribers_file)
 
     def _init_rss(self) -> None:
@@ -127,6 +128,7 @@ class DatabaseManager:
 
         # Commit the changes and delete the temporary file
         session.commit()
+        session.close()
         os.remove(rss_file)
 
     def fetch_all_rss(self) -> List[Type[RssPodcast]]:
@@ -139,6 +141,7 @@ class DatabaseManager:
 
         session = self._Session()
         all_rss = session.query(RssPodcast).all()
+        session.close()
         return all_rss
 
     def insert_podcast_file(self, podcast_id: int, drive_link: str, source_link: str, name: str,
@@ -184,6 +187,7 @@ class DatabaseManager:
         """
         session = self._Session()
         all_unsent_podcast = session.query(PodcastFiles).filter_by(is_sent=0).all()
+        session.close()
         return all_unsent_podcast
 
     def update_rss(self, rss_id: int, etag: str, last_newz_id: str = None, new_date: datetime = None) -> None:
@@ -231,4 +235,5 @@ class DatabaseManager:
         """
         session = self._Session()
         all_subscribers = session.query(Subscribers).all()
+        session.close()
         return all_subscribers
