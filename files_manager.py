@@ -201,6 +201,11 @@ class FilesManager:
             description = podcast.description
             file_size = os.path.getsize(file_path)
             cred_path = self._get_credential(file_size)
+            if not cred_path:
+                loger.error("You don't have enough space on google drive. "
+                            "provide another credential as soon as possible")
+                os.remove(file_path)
+                break
             drive_link = self._upload_podcast(file_path, 'audio/mpeg', description, cred_path)
             self._db.insert_podcast_file(podcast.podcast_id, drive_link, file_url, file_name, description,
                                          file_size, duration, podcast.published_date)
